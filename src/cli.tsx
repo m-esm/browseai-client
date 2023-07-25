@@ -6,4 +6,4 @@ async function bootstrap() {
   await CommandFactory.run(CliModule);
 }
 
-bootstrap();
+bootstrap().catch((e) => console.error(e));
