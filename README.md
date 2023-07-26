@@ -47,7 +47,3 @@ $ npm start
 # OR
 $ bash run.sh
 ```
-
-## License
-
-[MIT licensed](LICENSE).
