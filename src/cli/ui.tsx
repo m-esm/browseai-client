@@ -4,13 +4,19 @@ import Gradient from 'ink-gradient';
 import React from 'react';
 import { useState } from 'react';
 
+import { ClientService } from '../client/client.service.js';
+import { ConfigService } from '../common/config/config.service.js';
 import ApiKeyInput from './api-key-input.js';
-import { ConfigService } from 'src/common/config/config.service.js';
+import SelectRobot from './select-robot.js';
+import { Robot } from 'src/shared/robot.type.js';
+import SelectedRobot from './selected-robot.js';
 
 export default function UI({
   configService,
+  clientService,
 }: {
   configService: ConfigService;
+  clientService: ClientService;
 }) {
   const ranWithArgs = !!process.argv.find((p) => !p.includes('/'));
   const [config, setConfig] = useState(configService.config);
@@ -18,6 +24,12 @@ export default function UI({
     setConfig({ ...config, apiKey });
     configService.patch({ apiKey });
   };
+
+  const setRobot = async (robot: Robot) => {
+    setConfig({ ...config, robot });
+    configService.patch({ robot });
+  };
+
   return (
     <>
       <Gradient name="retro">
@@ -26,6 +38,15 @@ export default function UI({
       {!ranWithArgs ? (
         <Box padding={2} paddingTop={0}>
           {!config.apiKey ? <ApiKeyInput onSet={setApiKey} /> : null}
+
+          {config.apiKey && !config.robot ? (
+            <SelectRobot
+              clientService={clientService}
+              onSelect={(robot) => setRobot(robot)}
+            />
+          ) : null}
+
+          {config.robot ? <SelectedRobot robot={config.robot} /> : null}
         </Box>
       ) : null}
     </>
