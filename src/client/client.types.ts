@@ -1,4 +1,4 @@
-import { Robot } from 'src/shared/robot.type.js';
+import { Robot } from '../shared/robot.type.js';
 
 export type ResponsePayload<T> = {
   statusCode: number;
@@ -13,4 +13,20 @@ export type FetchResult<T = any> = {
   url: string;
   status: number;
   payload: T;
+};
+
+export type TaskInputParameters = {
+  name: string;
+  type: string;
+  label: string;
+  pattern: string;
+  required: boolean;
+  encrypted: boolean;
+  description: string;
+  defaultValue: string;
+};
+
+export type CreateTaskPayload = {
+  recordVideo: false;
+  inputParameters: TaskInputParameters[];
 };
