@@ -2,8 +2,12 @@ import { Injectable } from '@nestjs/common';
 import fetch from 'node-fetch';
 
 import { ConfigService } from '../common/config/config.service.js';
-import { CreateTaskPayload, FetchResult, RobotsList } from './client.types.js';
-import { Robot } from 'src/shared/robot.type.js';
+import {
+  CreateTaskPayload,
+  FetchResult,
+  RobotsList,
+  StoredRobotTask,
+} from './client.types.js';
 
 @Injectable()
 export class ClientService {
@@ -17,16 +21,18 @@ export class ClientService {
       Authorization: `Bearer ${this.configService.config.apiKey}`,
     };
   }
-  async getRobots(): Promise<FetchResult<Robot[]>> {
+  async getRobots(): Promise<FetchResult<RobotsList>> {
     const response = await fetch(this.baseUrl + '/robots', {
       headers: this.getHeaders(),
     });
 
     const resBody = (await response.json()) as RobotsList;
 
+    if (response.status === 401) this.configService.patch({ apiKey: null });
+
     return {
       status: response.status,
-      payload: resBody.robots?.items,
+      payload: resBody,
       url: response.url,
     };
   }
@@ -34,18 +40,18 @@ export class ClientService {
   async runRobot<T>(
     robotId: string,
     options: CreateTaskPayload,
-  ): Promise<FetchResult<Robot[]>> {
+  ): Promise<FetchResult<StoredRobotTask>> {
     const response = await fetch(`${this.baseUrl}/robots/${robotId}/tasks`, {
       method: 'POST',
       body: JSON.stringify(options),
       headers: this.getHeaders(),
     });
 
-    const resBody = (await response.json()) as RobotsList;
+    const resBody = (await response.json()) as StoredRobotTask;
 
     return {
       status: response.status,
-      payload: resBody.robots?.items,
+      payload: resBody,
       url: response.url,
     };
   }

@@ -21,7 +21,7 @@ export default function SelectRobot({
   useEffect(() => {
     clientService.getRobots().then((res) => {
       if (res.status !== 200) setError(res);
-      else setRobots(res.payload);
+      else setRobots(res.payload.robots.items);
     });
   }, []);
 

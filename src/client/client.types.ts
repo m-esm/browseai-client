@@ -36,3 +36,12 @@ export type ClientError = {
   url: string;
   payload: unknown;
 };
+
+export type StoredRobotTask = {
+  result: StoredRobotTaskResult;
+};
+
+export type StoredRobotTaskResult = {
+  id: string;
+  status: string;
+};
