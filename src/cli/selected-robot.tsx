@@ -7,7 +7,7 @@ import { Robot } from '../shared/robot.type.js';
 import RobotDetails from './robot-details.js';
 import TaskParamsForm from './task-params-form.js';
 import ErrorBox from './error-box.js';
-import { ClientError } from 'src/client/client.types.js';
+import { ClientError, StoredRobotTaskResult } from 'src/client/client.types.js';
 import Spinner from 'ink-spinner';
 
 export default function SelectedRobot({
@@ -29,6 +29,7 @@ export default function SelectedRobot({
   const [submitting, setSubmitting] = useState(false);
   const [errorTitle, setErrorTitle] = useState('');
   const [error, setError] = useState<ClientError>();
+  const [submittedTask, setSubmittedTask] = useState<StoredRobotTaskResult>();
 
   const handleSelect = ({ label }) => {
     switch (label) {
@@ -56,16 +57,17 @@ export default function SelectedRobot({
       })
       .then((r) => {
         setSubmitting(false);
-        console.log(r);
         if (r.status !== 200) {
           setErrorTitle('Failed to submit robot task');
           setError(r);
+        } else {
+          setSubmittedTask(r.payload?.result);
         }
       });
   };
 
   return (
-    <Box flexDirection='column'>
+    <Box flexDirection="column">
       {!formVisible ? (
         <>
           <RobotDetails robot={robot} />
@@ -92,6 +94,19 @@ export default function SelectedRobot({
           <Spinner type="fistBump" /> Submitting robot task ...
         </Text>
       ) : null}
+
+      {submittedTask ? (
+        <Box>
+          <Text>
+            Task Submitted!
+            <Newline />
+            ID: {submittedTask.id}
+            <Newline />
+            Status: {submittedTask.status}
+          </Text>
+        </Box>
+      ) : null}
+
       <ErrorBox error={error} title={errorTitle} />
     </Box>
   );
