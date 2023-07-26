@@ -60,6 +60,8 @@ export default function UI({
 
           {config.robot ? (
             <SelectedRobot
+            clientService={clientService}
+
               clearApiKey={clearApiKey}
               clearRobot={clearRobot}
               robot={config.robot}

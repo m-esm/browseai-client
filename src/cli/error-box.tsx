@@ -1,12 +1,14 @@
 import { Box, Newline, Text } from 'ink';
 import React from 'react';
 
+import { ClientError } from '../client/client.types.js';
+
 export default function ErrorBox({
   title,
   error,
 }: {
   title: string;
-  error: any;
+  error: ClientError;
 }) {
   if (!error) return;
 

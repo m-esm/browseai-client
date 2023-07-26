@@ -1,24 +1,34 @@
-import { Box, Newline, Text } from 'ink';
+import { Box, Newline, Spacer, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import React, { useState } from 'react';
-import { Robot } from 'src/shared/robot.type.js';
+import { ClientService } from 'src/client/client.service.js';
+import { Robot } from '../shared/robot.type.js';
+
 import RobotDetails from './robot-details.js';
 import TaskParamsForm from './task-params-form.js';
+import ErrorBox from './error-box.js';
+import { ClientError } from 'src/client/client.types.js';
+import Spinner from 'ink-spinner';
 
 export default function SelectedRobot({
   robot,
+  clientService,
   clearApiKey,
   clearRobot,
 }: {
+  robot: Robot;
+  clientService: ClientService;
   clearApiKey: () => void;
   clearRobot: () => void;
-  robot: Robot;
 }) {
   const options = ['Run robot', 'Select another robot', 'Clear API Key'].map(
     (p) => ({ label: p, value: p }),
   );
 
   const [formVisible, setFormVisible] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorTitle, setErrorTitle] = useState('');
+  const [error, setError] = useState<ClientError>();
 
   const handleSelect = ({ label }) => {
     switch (label) {
@@ -35,24 +45,54 @@ export default function SelectedRobot({
         break;
     }
   };
+
+  const createTask = (inputParameters: unknown) => {
+    setFormVisible(false);
+    setSubmitting(true);
+    clientService
+      .runRobot(robot.id, {
+        recordVideo: false,
+        inputParameters,
+      })
+      .then((r) => {
+        setSubmitting(false);
+        console.log(r);
+        if (r.status !== 200) {
+          setErrorTitle('Failed to submit robot task');
+          setError(r);
+        }
+      });
+  };
+
   return (
-    <Box>
+    <Box flexDirection='column'>
       {!formVisible ? (
         <>
           <RobotDetails robot={robot} />
-          <Newline />
-          <Box margin={1} marginTop={3}>
+
+          <Box display={!submitting ? 'flex' : 'none'} margin={1} marginTop={0}>
             <SelectInput items={options} onSelect={handleSelect} />
           </Box>
         </>
       ) : null}
 
+      <Spacer />
+
       {formVisible ? (
         <TaskParamsForm
+          onSubmit={createTask}
           exitForm={() => setFormVisible(false)}
           params={robot.inputParameters}
         />
       ) : null}
+
+      {submitting ? (
+        <Text>
+          <Newline />
+          <Spinner type="fistBump" /> Submitting robot task ...
+        </Text>
+      ) : null}
+      <ErrorBox error={error} title={errorTitle} />
     </Box>
   );
 }

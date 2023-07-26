@@ -28,5 +28,11 @@ export type TaskInputParameters = {
 
 export type CreateTaskPayload = {
   recordVideo: false;
-  inputParameters: TaskInputParameters[];
+  inputParameters: unknown;
+};
+
+export type ClientError = {
+  status: number;
+  url: string;
+  payload: unknown;
 };

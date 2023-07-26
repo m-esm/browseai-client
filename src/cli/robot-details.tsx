@@ -1,4 +1,4 @@
-import { Box, Newline, Text } from 'ink';
+import { Box, Newline, Spacer, Text } from 'ink';
 import React from 'react';
 import { Robot } from 'src/shared/robot.type.js';
 

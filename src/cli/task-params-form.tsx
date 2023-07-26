@@ -8,8 +8,10 @@ import SelectInput from 'ink-select-input';
 export default function TaskParamsForm({
   params,
   exitForm,
+  onSubmit,
 }: {
   params: TaskInputParameters[];
+  onSubmit: (form: any) => void;
   exitForm: () => void;
 }) {
   const [form, setForm] = useState({});
@@ -25,6 +27,7 @@ export default function TaskParamsForm({
   const handleSelect = ({ label }) => {
     switch (label) {
       case 'Submit':
+        onSubmit(form);
         break;
 
       case 'Start over':
@@ -38,7 +41,7 @@ export default function TaskParamsForm({
   };
 
   return (
-    <>
+    <Box flexDirection='column'>
       {params.map((p, i) => {
         if (inputSubmitted[p.name])
           return (
@@ -71,6 +74,6 @@ export default function TaskParamsForm({
           <SelectInput items={formOptions} onSelect={handleSelect} />
         </Box>
       ) : null}
-    </>
+    </Box>
   );
 }
