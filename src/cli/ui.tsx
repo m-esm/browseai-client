@@ -30,6 +30,18 @@ export default function UI({
     configService.patch({ robot });
   };
 
+  const clearApiKey = () => {
+    return configService
+      .patch({ robot: null, apiKey: null })
+      .then((config) => setConfig(config));
+  };
+
+  const clearRobot = () => {
+    return configService
+      .patch({ robot: null })
+      .then((config) => setConfig(config));
+  };
+
   return (
     <>
       <Gradient name="retro">
@@ -46,7 +58,13 @@ export default function UI({
             />
           ) : null}
 
-          {config.robot ? <SelectedRobot robot={config.robot} /> : null}
+          {config.robot ? (
+            <SelectedRobot
+              clearApiKey={clearApiKey}
+              clearRobot={clearRobot}
+              robot={config.robot}
+            />
+          ) : null}
         </Box>
       ) : null}
     </>

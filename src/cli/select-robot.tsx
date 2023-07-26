@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react';
-import Spinner from 'ink-spinner';
-import React from 'react';
-import fetch from 'node-fetch';
-import { ClientService } from 'src/client/client.service.js';
-import { Box, Newline, Text } from 'ink';
+import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
-import ErrorBox from './error-box.js';
+import Spinner from 'ink-spinner';
+import { useEffect, useState } from 'react';
+import React from 'react';
+import { ClientService } from 'src/client/client.service.js';
 import { Robot } from 'src/shared/robot.type.js';
-import { ConfigService } from 'src/common/config/config.service.js';
-import { Config } from 'src/common/config/config.type.js';
+
+import ErrorBox from './error-box.js';
 
 export default function SelectRobot({
   clientService,
@@ -54,8 +52,6 @@ export default function SelectRobot({
       ) : null}
 
       <ErrorBox title="Failed to fetch robots" error={error} />
-
-      {/* <SelectInput items={items} onSelect={handleSelect} /> */}
     </>
   );
 }
